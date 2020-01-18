@@ -8,13 +8,7 @@ import com.codeguild.convinceme.model.Proposition;
 import com.codeguild.convinceme.model.PropositionVector;
 import com.codeguild.convinceme.utils.Debug;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import javax.swing.JFileChooser;
@@ -25,7 +19,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -62,8 +55,6 @@ public class MainFrame extends Configuration {
     protected File mCurrentDir;
 
     public MainFrame() {
-        setCustomLookAndFeel();
-
         mTextListPanel = new ListPanel(this);
         mDiagramPanel = new DiagramPanel(this);
         mLogPanel = new TextPanel("Log");
@@ -91,13 +82,7 @@ public class MainFrame extends Configuration {
         mAppWindow.getContentPane().add(tabbedPane, BorderLayout.CENTER);
         mAppWindow.setSize(getPreferredSize());
 
-        // specify that my listener takes care of all closing duties
-        mAppWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        mAppWindow.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                quit();
-            }
-        });
+        mAppWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         Utils.centerFrameOnScreen(mAppWindow);
         mAppWindow.setVisible(true);
@@ -274,9 +259,9 @@ public class MainFrame extends Configuration {
 
     public void editFromVector(PropositionVector v, int[] indexes, boolean isHyp) {
         Proposition prop;
-        for (int i = 0; i < indexes.length; i++) {
+        for (int index : indexes) {
             try {
-                prop = v.getPropAt(indexes[i]);
+                prop = v.getPropAt(index);
                 log("Editing " + prop.getLabel());
                 PropositionEditPanel dialog = new PropositionEditPanel(this, prop, isHyp);
                 dialog.showDialog();
@@ -288,13 +273,6 @@ public class MainFrame extends Configuration {
 
     public void showParams() {
         mParameterPanel.showDialog();
-    }
-
-    public void showEncoding() {
-        JOptionPane.showConfirmDialog(null,
-                mEncodingPanel,
-                "ECHO Encoding",
-                JOptionPane.OK_OPTION);
     }
 
     /**
@@ -311,229 +289,109 @@ public class MainFrame extends Configuration {
         JOptionPane.showMessageDialog(mAppWindow, message, "Simulation Results", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /**
-     * Set custom look and feel
-     */
-    private void setCustomLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-            UIManager.put("Menu.background", Color.white);
-            UIManager.put("MenuBar.background", Color.white);
-            UIManager.put("MenuItem.background", Color.white);
-            UIManager.put("CheckBoxMenuItem.background", Color.white);
-            UIManager.put("ComboBox.background", Color.white);
-            UIManager.put("MenuBar.font", Configuration.MENU_FONT);
-
-            UIManager.put("ComboBox.font", Configuration.TEXT_FONT);
-            UIManager.put("CheckBox.font", Configuration.TEXT_FONT);
-            UIManager.put("TextArea.font", Configuration.TEXT_FONT);
-            UIManager.put("Label.font", Configuration.TEXT_FONT);
-            UIManager.put("Slider.font", Configuration.TEXT_FONT);
-
-            UIManager.put("Button.font", Configuration.TEXT_FONT);
-            UIManager.put("Button.background", Configuration.BACKGROUND);
-            UIManager.put("Button.margin", new Insets(1, 5, 1, 5));
-
-            UIManager.put("TextArea.background", Color.white);
-
-            UIManager.put("Label.background", Configuration.BACKGROUND);
-            UIManager.put("Frame.background", Configuration.BACKGROUND);
-            UIManager.put("Panel.background", Configuration.BACKGROUND);
-            UIManager.put("RadioButton.background", Configuration.BACKGROUND);
-            UIManager.put("CheckBox.background", Configuration.BACKGROUND);
-            UIManager.put("Slider.background", Configuration.BACKGROUND);
-            UIManager.put("ToolBar.background", Configuration.BACKGROUND);
-            UIManager.put("Scrollbar.background", Configuration.BACKGROUND);
-            UIManager.put("ScrollPane.background", Configuration.BACKGROUND);
-            UIManager.put("Viewport.background", Configuration.BACKGROUND);
-            UIManager.put("OptionPane.background", Configuration.BACKGROUND);
-            UIManager.put("FileChooser.background", Configuration.BACKGROUND);
-            UIManager.put("TabbedPane.background", Configuration.BACKGROUND);
-            UIManager.put("TableHeader.background", Configuration.BACKGROUND);
-
-        } catch (Exception e) {
-            Debug.println("MainFrame.main(): UIManager couldn't set SystemLookAndFeel");
-        }
-    }
-
     private JMenuBar getMenuBar() {
         // file menu
         JMenu fileMenu = new JMenu("File");
 
         JMenuItem menuItem = new JMenuItem("New Argument");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('N', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                newCM();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl N"));
+        menuItem.addActionListener(e -> newCM());
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem("Open Argument...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('O', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                load();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
+        menuItem.addActionListener(e -> load());
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem("Close Argument");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('W', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl W"));
+        menuItem.addActionListener(e -> dispose());
         fileMenu.add(menuItem);
 
         fileMenu.addSeparator();
 
         menuItem = new JMenuItem("Save Argument As...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                save();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
+        menuItem.addActionListener(e -> save());
         fileMenu.add(menuItem);
 
 
         menuItem = new JMenuItem("Save Log As...");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                saveLog();
-            }
-        });
+        menuItem.addActionListener(e -> saveLog());
         fileMenu.add(menuItem);
 
         menuItem = new JMenuItem("Save Encoding As...");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                saveEncoding();
-            }
-        });
+        menuItem.addActionListener(e -> saveEncoding());
         fileMenu.add(menuItem);
 
         fileMenu.addSeparator();
 
         menuItem = new JMenuItem("Quit");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('Q', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // prompt to save code goes here
-                quit();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl Q"));
+        menuItem.addActionListener(e -> dispose());
         fileMenu.add(menuItem);
 
-        // edit menu
+        // Edit menu
         JMenu editMenu = new JMenu("Edit");
 
         menuItem = new JMenuItem("Add Hypothesis...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('H', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addHypDialog();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl H"));
+        menuItem.addActionListener(e -> addHypDialog());
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem("Add Data...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('D', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addDataDialog();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl D"));
+        menuItem.addActionListener(e -> addDataDialog());
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem("Add Explanation...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addExpDialog();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl X"));
+        menuItem.addActionListener(e -> addExpDialog());
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem("Add Contradiction...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addContDialog();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
+        menuItem.addActionListener(e -> addContDialog());
 
         editMenu.addSeparator();
 
         menuItem = new JMenuItem("Edit Selected Propositions");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('E', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                editSelected();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl E"));
+        menuItem.addActionListener(e -> editSelected());
         editMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Unselect All");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('U', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                updatePanels();
-            }
-        });
+        menuItem = new JMenuItem("Un-select All");
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl U"));
+        menuItem.addActionListener(e -> updatePanels());
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem("Delete Selected");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                deleteSelected();
-            }
-        });
+        menuItem.addActionListener(e -> deleteSelected());
         editMenu.add(menuItem);
 
         menuItem = new JMenuItem("Delete All");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                deleteArgument();
-            }
-        });
+        menuItem.addActionListener(e -> deleteArgument());
         editMenu.add(menuItem);
 
         editMenu.addSeparator();
 
         menuItem = new JMenuItem("Clear Log");
-        menuItem.addActionListener(new ActionListener() { // handle clear request
-            public void actionPerformed(ActionEvent e) {
-                clearLog();
-            }
-        });
+        menuItem.addActionListener(e -> clearLog());
         editMenu.add(menuItem);
 
-        // simulation menu
+        // Simulation menu
         JMenu simulationMenu = new JMenu("Simulation");
 
         menuItem = new JMenuItem("Run");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('R', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                runECHO();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl R"));
+        menuItem.addActionListener(e -> runECHO());
         simulationMenu.add(menuItem);
 
         menuItem = new JMenuItem("Set parameters...");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke('P', java.awt.Event.CTRL_MASK, false));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                showParams();
-            }
-        });
+        menuItem.setAccelerator(KeyStroke.getKeyStroke("ctrl P"));
+        menuItem.addActionListener(e -> showParams());
         simulationMenu.add(menuItem);
 
-        // menubar
         JMenuBar menubar = new JMenuBar();
         menubar.add(fileMenu);
         menubar.add(editMenu);

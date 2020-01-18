@@ -16,7 +16,6 @@ import java.awt.Font;
  * @author Patti Schank
  */
 public class Configuration {
-
     public static final Font MENU_FONT = new Font("SansSerif", Font.PLAIN, 12);
     public static final Font TEXT_FONT = new Font("SansSerif", Font.PLAIN, 12);
     public static final Font HEADER_FONT = new Font("SansSerif", Font.BOLD, 12);
@@ -32,13 +31,6 @@ public class Configuration {
 
     public Configuration() {
         mArgument = new Argument();
-    }
-
-    /**
-     * Quit the application or applet
-     */
-    public void quit() {
-        System.exit(0);
     }
 
     /**
@@ -84,8 +76,6 @@ public class Configuration {
 
     /**
      * Record text to a log. Override me
-     *
-     * @param text
      */
     public void log(String text) {
         Debug.println("Override log method ");
@@ -94,8 +84,6 @@ public class Configuration {
     /**
      * Show a message to the user about the ECHO correlation with
      * their ratings. Override me
-     *
-     * @param message
      */
     public void showCorrelationMessage(String message) {
         Debug.println("Override show correlation method");
