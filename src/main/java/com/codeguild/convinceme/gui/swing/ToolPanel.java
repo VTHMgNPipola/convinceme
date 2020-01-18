@@ -11,11 +11,7 @@ import javax.swing.JPanel;
  *
  * @author Patti Schank
  */
-
 public class ToolPanel extends JPanel {
-
-    final static String IMAGEPATH = "/images/";
-
     private MainFrame mController;
 
     public ToolPanel(MainFrame controller) {

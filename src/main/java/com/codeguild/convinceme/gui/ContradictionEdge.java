@@ -1,7 +1,10 @@
 package com.codeguild.convinceme.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 /**
  * <p>Description: A contradiction edge that can draw itself.</p>
@@ -11,21 +14,18 @@ import java.awt.Graphics;
  * @author Patti Schank
  */
 public class ContradictionEdge extends Edge {
+    private static final Stroke dashedStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+            10.0f, new float[]{10.0f}, 0.0f);
 
     public ContradictionEdge() {
     }
 
-    public void drawEdge(Graphics g, int x1, int y1, int x2, int y2) {
+    public void drawEdge(Graphics graphics, int x1, int y1, int x2, int y2) {
+        Graphics2D g = (Graphics2D) graphics;
         g.setColor(Color.red);
-        int dashLength = 10;
-        double dist = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-        int numDashes = (int) Math.round(dist) / dashLength;
-        int dx = (x2 - x1) / (numDashes * 2);
-        int dy = (y2 - y1) / (numDashes * 2);
-        for (int i = 0; i < numDashes; i++) {
-            g.drawLine(x1, y1, x1 + dx, y1 + dy);
-            x1 = x1 + (dx * 2);
-            y1 = y1 + (dy * 2);
-        }
+        Stroke oldStroke = g.getStroke();
+        g.setStroke(dashedStroke);
+        g.drawLine(x1, y1, x2, y2);
+        g.setStroke(oldStroke);
     }
 }
