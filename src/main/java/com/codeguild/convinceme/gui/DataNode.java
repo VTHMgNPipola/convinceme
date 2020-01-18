@@ -16,10 +16,10 @@ public class DataNode extends Node {
         super(p);
     }
 
-    public void drawNode(Graphics g, int w, int h) {
+    public void drawNode(Graphics g, int width, int height) {
         g.setColor((Color.green).brighter());
-        g.fillRect(getX() - w / 2, getY() - h / 2, w, h);
+        g.fillRect(getX() - width / 2, getY() - height / 2, width, height);
         g.setColor(selected ? Color.red : Color.black);
-        g.drawRect(getX() - w / 2, getY() - h / 2, w - 1, h - 1);
+        g.drawRect(getX() - width / 2, getY() - height / 2, width - 1, height - 1);
     }
 }

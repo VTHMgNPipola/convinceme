@@ -4,6 +4,7 @@ import com.codeguild.convinceme.model.Proposition;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Point;
 
 /**
  * <p>Description: A node that can draw itself</p>
@@ -17,6 +18,8 @@ public class Node {
     protected Proposition mProp;
     protected String mLabel = " ";
     protected boolean selected;
+
+    private int width, height;
 
     public Node(Proposition p) {
         mProp = p;
@@ -61,19 +64,22 @@ public class Node {
         this.selected = selected;
         FontMetrics fm = g.getFontMetrics();
         Color old = g.getColor();
-        int w = fm.stringWidth(mLabel) + 12;
-        int h = fm.getHeight() + 4;
-        drawNode(g, w, h);
+        width = fm.stringWidth(mLabel) + 12;
+        height = fm.getHeight() + 4;
+        drawNode(g, width, height);
         g.setColor(Color.black);
-        g.drawString(mLabel, getX() - (w - 10) / 2, (getY() - (h - 4) / 2) + fm.getAscent());
+        g.drawString(mLabel, getX() - (width - 10) / 2, (getY() - (height - 4) / 2) + fm.getAscent());
         g.setColor(old);
     }
 
-    public void drawNode(Graphics g, int w, int h) {
+    public void drawNode(Graphics g, int width, int height) {
         g.setColor(selected ? Color.red : Color.black);
-        g.drawOval(getX() - w / 2, getY() - h / 2, w - 1, h - 1);
+        g.drawOval(getX() - width / 2, getY() - height / 2, width - 1, height - 1);
+    }
+
+    public boolean isInside(Point p) { // This method assumes the node has already been drawn
+        System.out.println(getX() + " " + (getX() + width) + " " + getY() + " " + (getY() + height));
+        return (p.x >= getX() && p.x <= getX() + width) &&
+                (p.y >= getY() && p.y <= getY() + height);
     }
 }
-
-
-

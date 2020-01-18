@@ -47,20 +47,13 @@ public class GraphPanel extends JPanel {
 
         this.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                double bestdist = Double.MAX_VALUE;
-                int x = e.getX();
-                int y = e.getY();
+                System.out.println(e.getPoint());
                 for (Node n : mNodes) {
-                    double dist = (n.getX() - x) * (n.getX() - x) + (n.getY() - y) * (n.getY() - y);
-                    if (dist < bestdist) {
+                    if (n.isInside(e.getPoint())) {
                         mSelectedNode = n;
-                        bestdist = dist;
+                        repaint();
+                        break;
                     }
-                }
-                if (mSelectedNode != null) {
-                    mSelectedNode.setX(x);
-                    mSelectedNode.setY(y);
-                    repaint();
                 }
             }
         });

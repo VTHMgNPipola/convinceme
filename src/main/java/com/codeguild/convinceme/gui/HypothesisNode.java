@@ -17,12 +17,12 @@ public class HypothesisNode extends Node {
         super(p);
     }
 
-    public void drawNode(Graphics g, int w, int h) {
+    public void drawNode(Graphics g, int width, int height) {
         g.setColor((Color.yellow).brighter());
-        w += 8;
-        h += 6;
-        g.fillOval(getX() - w / 2, getY() - h / 2, w, h);
+        width += 8;
+        height += 6;
+        g.fillOval(getX() - width / 2, getY() - height / 2, width, height);
         g.setColor(selected ? Color.red : Color.black);
-        g.drawOval(getX() - w / 2, getY() - h / 2, w - 1, h - 1);
+        g.drawOval(getX() - width / 2, getY() - height / 2, width - 1, height - 1);
     }
 }
