@@ -19,9 +19,8 @@ import org.w3c.dom.NodeList;
 public class Argument {
     public PropositionVector mHypotheses, mData;
     public LinkVector mExplanations, mContradictions;
-    public final int mVersion = 1;
-    public int mHypID = 0;
-    public int mDataID = 0;
+    public int mHypID;
+    public int mDataID;
     public String mNotes;
 
     // for XML
@@ -48,16 +47,16 @@ public class Argument {
         Proposition result = null;
         boolean found = false;
 
-        Enumeration e = mHypotheses.elements();
+        Enumeration<Proposition> e = mHypotheses.elements();
         while (e.hasMoreElements() && !found) {
-            result = (Proposition) e.nextElement();
+            result = e.nextElement();
             if (label.equalsIgnoreCase(result.getLabel())) {
                 found = true;
             }
         }
         e = mData.elements();
         while (e.hasMoreElements() && !found) {
-            result = (Proposition) e.nextElement();
+            result = e.nextElement();
             if (label.equalsIgnoreCase(result.getLabel())) {
                 found = true;
             }
@@ -84,9 +83,9 @@ public class Argument {
      */
     public String getUniqueHypID() {
         int max = 0;
-        Enumeration e = mHypotheses.elements();
+        Enumeration<Proposition> e = mHypotheses.elements();
         while (e.hasMoreElements()) {
-            Proposition p = (Proposition) e.nextElement();
+            Proposition p = e.nextElement();
             String digit = p.getLabel().substring(1);
             try {
                 max = Math.max(max, Integer.parseInt(digit));
@@ -103,9 +102,9 @@ public class Argument {
      */
     public String getUniqueDataID() {
         int max = 0;
-        Enumeration e = mData.elements();
+        Enumeration<Proposition> e = mData.elements();
         while (e.hasMoreElements()) {
-            Proposition p = (Proposition) e.nextElement();
+            Proposition p = e.nextElement();
             String digit = p.getLabel().substring(1);
             try {
                 max = Math.max(max, Integer.parseInt(digit));
@@ -174,9 +173,9 @@ public class Argument {
      * @param indexes indices of Proposition to delete
      */
     public void deleteHypotheses(int[] indexes) {
-        for (int i = 0; i < indexes.length; i++) {
+        for (int index : indexes) {
             try {
-                mHypotheses.removeElementAt(indexes[i]);
+                mHypotheses.removeElementAt(index);
             } catch (Exception e) {
                 Debug.printStackTrace(e);
             }
@@ -291,7 +290,7 @@ public class Argument {
             root.appendChild(l.getXML());
         }
         linkEnumeration = mContradictions.elements();
-        while (propositionEnumeration.hasMoreElements()) {
+        while (linkEnumeration.hasMoreElements()) {
             Link l = linkEnumeration.nextElement();
             root.appendChild(l.getXML());
         }
