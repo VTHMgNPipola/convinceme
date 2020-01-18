@@ -14,6 +14,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -47,7 +49,6 @@ public class GraphPanel extends JPanel {
 
         this.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                System.out.println(e.getPoint());
                 for (Node n : mNodes) {
                     if (n.isInside(e.getPoint())) {
                         mSelectedNode = n;
@@ -124,9 +125,9 @@ public class GraphPanel extends JPanel {
     }
 
     private Node findNode(Proposition p) {
-        for (int i = 0; i < mNodes.size(); i++) {
-            if (mNodes.get(i).getLabel().equals(p.getLabel())) {
-                return mNodes.get(i);
+        for (Node mNode : mNodes) {
+            if (mNode.getLabel().equals(p.getLabel())) {
+                return mNode;
             }
         }
         return addNode(p);
@@ -175,7 +176,11 @@ public class GraphPanel extends JPanel {
         paint(g);
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics graphics) {
+        Graphics2D g = (Graphics2D) graphics;
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
         g.clearRect(0, 0, getSize().width, getSize().height);
         g.setColor(Color.white);
         g.fillRect(0, 0, getSize().width - 2, getSize().height - 2);

@@ -78,7 +78,6 @@ public class Node {
     }
 
     public boolean isInside(Point p) { // This method assumes the node has already been drawn
-        System.out.println(getX() + " " + (getX() + width) + " " + getY() + " " + (getY() + height));
         return (p.x >= getX() && p.x <= getX() + width) &&
                 (p.y >= getY() && p.y <= getY() + height);
     }

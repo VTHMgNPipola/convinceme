@@ -121,7 +121,7 @@ public class MainFrame extends Configuration {
         if (choice == JFileChooser.APPROVE_OPTION) {
             try {
                 String filename = fileChooser.getSelectedFile().getAbsolutePath();
-                if (filename.endsWith(".xml") && fileChooser.getFileFilter() == xmlFilter) {
+                if (!filename.endsWith(".xml") && fileChooser.getFileFilter() == xmlFilter) {
                     filename += ".xml";
                 }
                 mCurrentDir = fileChooser.getCurrentDirectory();
